@@ -14,7 +14,7 @@ spec:
       containers:
       - name : exec-sdc
         # pull sdc-dpm docker image which is present in gcp container registry
-        image: us.gcr.io/erudite-variety-165104/sdc-dpm
+        image: path/to/your/private/image
         imagePullPolicy: Always
         ports:
         - containerPort: 18360
@@ -34,7 +34,7 @@ spec:
         - name: PORT0
           value: "18630"
         - name: ORG
-          value: "harik"
+          value: "your_org"
         - name: URL
           value: "https://cloud.streamsets.com"
         - name: LABELS
