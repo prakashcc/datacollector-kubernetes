@@ -50,7 +50,7 @@ touch /tmp/authToken.txt
 curl -X PUT -d "{\"organization\": \"${ORG}\", \"componentType\" : \"dc\", \"numberOfComponents\" : 1, \"active\" : true}" ${URL}/security/rest/v1/organization/${ORG}/components --header "Content-Type:application/json" --header "X-Requested-By:SDC" --header "X-SS-REST-CALL:true" --header "X-SS-User-Auth-Token:$sessionToken" > /tmp/authToken.txt
 
 # copy app token to sds.properties file
-authToken=`sed -e 's/^.*"fullAuthToken"[ ]*:[ ]*"//' -e 's/".*//' /tmp/authToken.txt`
+authToken=`jq --raw-output '.[0]|.fullAuthToken' /tmp/authToken.txt`
 
 echo "Modifying sdc.properties"
 
