@@ -1,6 +1,6 @@
 ---
 kind: StorageClass
-apiVersion: storage.k8s.io/v1beta1
+apiVersion: storage.k8s.io/v1
 metadata:
   name: default
 provisioner: kubernetes.io/gce-pd
@@ -11,9 +11,9 @@ parameters:
 apiVersion: v1
 kind: Service
 metadata:
-  name: datacollector
+  name: exec-sdc
   labels:
-    app: datacollector
+    app: exec-sdc
 spec:
   ports:
   - port: 18630
@@ -21,19 +21,22 @@ spec:
     name: ui
   clusterIP: None
   selector:
-    app: datacollector
+    app: exec-sdc
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: datacollector
+  name: exec-sdc
 spec:
-  serviceName: "datacollector"
+  serviceName: "exec-sdc"
   replicas: 1
+  selector:
+    matchLabels:
+      app: exec-sdc
   template:
     metadata:
       labels:
-        app: datacollector
+        app: exec-sdc
       annotations:
         pod.beta.kubernetes.io/init-containers: '[
           {
@@ -49,8 +52,8 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       containers:
-      - name: datacollector
-        image: streamsets/datacollector
+      - name: exec-sdc
+        image: connectprakash/streamsets-m1
         ports:
         - containerPort: 18630
           name: ui

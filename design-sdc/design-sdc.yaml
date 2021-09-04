@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   # name of deployment
@@ -6,6 +6,9 @@ metadata:
 spec:
   # 3 instances of SDC
   replicas: 1
+  selector:
+    matchLabels:
+      app: design-sdc
   template:
     metadata:
       labels:
@@ -14,7 +17,7 @@ spec:
       containers:
       - name : design-sdc
         # pull sdc-dpm docker image which is present in gcp container registry
-        image: path/to/your/private/image
+        image: connectprakash/streamsets-m1
         imagePullPolicy: Always
         ports:
         - containerPort: 18360
