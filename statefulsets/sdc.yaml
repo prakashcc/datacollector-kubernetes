@@ -11,9 +11,9 @@ parameters:
 apiVersion: v1
 kind: Service
 metadata:
-  name: exec-sdc
+  name: datacollector
   labels:
-    app: exec-sdc
+    app: datacollector
 spec:
   ports:
   - port: 18630
@@ -21,22 +21,22 @@ spec:
     name: ui
   clusterIP: None
   selector:
-    app: exec-sdc
+    app: datacollector
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: exec-sdc
+  name: datacollector
 spec:
-  serviceName: "exec-sdc"
+  serviceName: "datacollector"
   replicas: 1
   selector:
     matchLabels:
-      app: exec-sdc
+      app: datacollector
   template:
     metadata:
       labels:
-        app: exec-sdc
+        app: datacollector
       annotations:
         pod.beta.kubernetes.io/init-containers: '[
           {
@@ -52,7 +52,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       containers:
-      - name: exec-sdc
+      - name: datacollector
         image: connectprakash/streamsets-m1
         ports:
         - containerPort: 18630
