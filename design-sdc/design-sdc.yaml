@@ -17,8 +17,8 @@ spec:
       containers:
       - name : design-sdc
         # pull sdc-dpm docker image which is present in gcp container registry
-        image: connectprakash/streamsets-m1
-        imagePullPolicy: Always
+        image: streamsets-m1
+        imagePullPolicy: Never
         ports:
         - containerPort: 18360
         lifecycle:

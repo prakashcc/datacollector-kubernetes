@@ -17,11 +17,12 @@ metadata:
 spec:
   ports:
   - port: 18630
+    name: sdc-port
     targetPort: 18630
-    name: ui
-  clusterIP: None
+    protocol: TCP
   selector:
     app: datacollector
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -42,10 +43,10 @@ spec:
           {
             "name": "init-datacollector-data",
             "image": "busybox",
-            "command": ["sh", "-c", "chown -R 20159 /data /opt/streamsets-datacollector/streamsets-libs"],
+            "command": ["sh", "-c", "chown -R 20159 /data /opt/streamsets-datacollector-3.20.0/streamsets-libs"],
             "volumeMounts": [
               {"name": "data", "mountPath": "/data", "subPath": "data"},
-              {"name": "data", "mountPath": "/opt/streamsets-datacollector/streamsets-libs", "subPath": "stagelibs"}
+              {"name": "data", "mountPath": "/opt/streamsetsls-datacollector-3.20.0/streamsets-libs", "subPath": "stagelibs"}
             ]
           }
         ]'
@@ -62,7 +63,7 @@ spec:
             command: ["curl", "127.0.0.1:18630/public-rest/ping"]
         volumeMounts:
         - name: data
-          mountPath: /data
+          mountPath: /data/
           subPath: data
         - name: data
           mountPath: /opt/streamsets-datacollector/streamsets-libs
@@ -77,4 +78,3 @@ spec:
       resources:
         requests:
           storage: 1Gi
-

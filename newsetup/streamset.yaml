@@ -1,0 +1,81 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamset
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: streamset
+  clusterIP: None
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamset
+spec:
+  selector:
+    matchLabels:
+      app: streamset
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: streamset
+    spec:
+      containers:
+      - image: connectprakash/streamsets-m1
+        name: streamset
+        env:
+          # Use secret in real usage
+        - name: streamset_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 18630
+          name: streamset
+        volumeMounts:
+        - name: data
+          mountPath: /opt/streamsets/
+          subPath: data
+        - name: data
+          mountPath: /opt/streamsets-datacollector/streamsets-libs
+          subPath: stagelibs
+      volumes:
+      - name: streamset-persistent-storage
+        persistentVolumeClaim:
+          claimName: streamset-pv-claim
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: streamset-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: streamset-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
